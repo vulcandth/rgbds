@@ -86,6 +86,12 @@ set(rgbfix_src
     "fix/warning.cpp"
     )
 
+set(rgbfmt_src
+    "fmt/formatter.cpp"
+    "fmt/main.cpp"
+    "fmt/warning.cpp"
+    )
+
 set(rgbgfx_src
     "gfx/color_set.cpp"
     "gfx/main.cpp"
@@ -100,7 +106,7 @@ set(rgbgfx_src
     "verbosity.cpp"
     )
 
-foreach(PROG "asm" "fix" "gfx" "link")
+foreach(PROG "asm" "fix" "fmt" "gfx" "link")
   add_executable(rgb${PROG}
                  ${rgb${PROG}_src}
                  ${common_src}

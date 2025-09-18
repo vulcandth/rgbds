@@ -1,10 +1,11 @@
 # RGBDS Architecture
 
-The RGBDS package consists of four programs: RGBASM, RGBLINK, RGBFIX, and RGBGFX.
+The RGBDS package consists of five programs: RGBASM, RGBLINK, RGBFIX, RGBFMT, and RGBGFX.
 
 - RGBASM is the assembler. It takes assembly code as input, and produces an RGB object file as output (and optionally a state file, logging the final state of variables and constants).
 - RGBLINK is the linker. It takes object files as input, and produces a ROM file as output (and optionally a symbol and/or map file, logging where the assembly declarations got placed in the ROM).
 - RGBFIX is the checksum/header fixer. It takes a ROM file as input, and outputs the same ROM file (or modifies it in-place) with the cartridge header's checksum and other metadata fixed for consistency.
+- RGBFMT is the formatter. It takes RGBASM source files and rewrites them to match a consistent layout without changing their semantics.
 - RGBGFX is the graphics converter. It takes a PNG image file as input, and outputs the tile data, palettes, tilemap, attribute map, and/or palette map in formats that the Game Boy can use.
 
 In the simplest case, a single pipeline can turn an assembly file into a ROM:
@@ -13,7 +14,7 @@ In the simplest case, a single pipeline can turn an assembly file into a ROM:
 (rgbasm -o - - | rgblink -o - - | rgbfix -v -p 0) < game.asm > game.gb
 ```
 
-This document describes how these four programs are structured. It goes over each source code file, noting which data is *global* (and thus scoped in all files), *owned* by that file (i.e. that is where the data's memory is managed, via [RAII](https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization)) or *referenced* by that file (i.e. there are non-owning pointers to some data, and care must be taken to not dereference those pointers after the data's owner has moved or deleted the data).
+This document describes how these five programs are structured. It goes over each source code file, noting which data is *global* (and thus scoped in all files), *owned* by that file (i.e. that is where the data's memory is managed, via [RAII](https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization)) or *referenced* by that file (i.e. there are non-owning pointers to some data, and care must be taken to not dereference those pointers after the data's owner has moved or deleted the data).
 
 We assume that the programs are single-threaded; data structures and operations may not be thread-safe.
 
@@ -43,6 +44,8 @@ rgbds/
 │   ├── extern/
 │   │   └── ...
 │   ├── fix/
+│   │   └── ...
+│   ├── fmt/
 │   │   └── ...
 │   ├── gfx/
 │   │   └── ...
@@ -87,6 +90,8 @@ rgbds/
     Source code copied from external sources.
   * **`fix/`:**  
     Source code of RGBFIX.
+  * **`fmt/`:**  
+    Source code of RGBFMT.
   * **`gfx/`:**  
     Source code of RGBGFX.
   * **`link/`:**  
@@ -116,7 +121,7 @@ rgbds/
 
 ## RGBDS
 
-These files in the `src/` directory are shared across multiple programs: often all four (RGBASM, RGBLINK, RGBFIX, and RGBGFX), sometimes only RGBASM and RGBLINK.
+These files in the `src/` directory are shared across multiple programs: often all five (RGBASM, RGBLINK, RGBFIX, RGBFMT, and RGBGFX), sometimes only RGBASM and RGBLINK.
 
 - **`backtrace.cpp`:**  
   Generic printing of location backtraces for RGBASM and RGBLINK. Allows configuring backtrace styles with a command-line flag (conventionally `-B/--backtrace`). Renders warnings in yellow, errors in red, and locations in cyan.

@@ -47,7 +47,7 @@ BASE_REF := origin/master
 
 # Rules to build the RGBDS binaries
 
-all: rgbasm rgblink rgbfix rgbgfx
+all: rgbasm rgblink rgbfix rgbfmt rgbgfx
 
 common_obj := \
 	src/extern/getopt.o \
@@ -111,6 +111,12 @@ rgbfix_obj := \
 	src/fix/mbc.o \
 	src/fix/warning.o
 
+rgbfmt_obj := \
+	${common_obj} \
+	src/fmt/formatter.o \
+	src/fmt/main.o \
+	src/fmt/warning.o
+
 rgbgfx_obj := \
 	${common_obj} \
 	src/gfx/color_set.o \
@@ -133,6 +139,9 @@ rgblink: ${rgblink_obj}
 
 rgbfix: ${rgbfix_obj}
 	$Q${CXX} ${REALLDFLAGS} -o $@ ${rgbfix_obj} ${REALCXXFLAGS} src/version.cpp
+
+rgbfmt: ${rgbfmt_obj}
+	$Q${CXX} ${REALLDFLAGS} -o $@ ${rgbfmt_obj} ${REALCXXFLAGS} src/version.cpp
 
 rgbgfx: ${rgbgfx_obj}
 	$Q${CXX} ${REALLDFLAGS} ${PNGLDFLAGS} -o $@ ${rgbgfx_obj} ${REALCXXFLAGS} ${PNGLDLIBS} src/version.cpp
@@ -185,6 +194,7 @@ clean:
 	$Q${RM} rgbasm rgbasm.exe
 	$Q${RM} rgblink rgblink.exe
 	$Q${RM} rgbfix rgbfix.exe
+	$Q${RM} rgbfmt rgbfmt.exe
 	$Q${RM} rgbgfx rgbgfx.exe
 	$Qfind src/ -name "*.o" -exec rm {} \;
 	$Qfind . -type f \( -name "*.gcno" -o -name "*.gcda" -o -name "*.gcov" \) -exec rm {} \;
@@ -199,6 +209,7 @@ install: all
 	$Qinstall ${STRIP} -m ${BINMODE} rgbasm ${DESTDIR}${bindir}/rgbasm${SUFFIX}
 	$Qinstall ${STRIP} -m ${BINMODE} rgblink ${DESTDIR}${bindir}/rgblink${SUFFIX}
 	$Qinstall ${STRIP} -m ${BINMODE} rgbfix ${DESTDIR}${bindir}/rgbfix${SUFFIX}
+	$Qinstall ${STRIP} -m ${BINMODE} rgbfmt ${DESTDIR}${bindir}/rgbfmt${SUFFIX}
 	$Qinstall ${STRIP} -m ${BINMODE} rgbgfx ${DESTDIR}${bindir}/rgbgfx${SUFFIX}
 	$Qinstall -m ${MANMODE} man/rgbasm.1 man/rgblink.1 man/rgbfix.1 man/rgbgfx.1 ${DESTDIR}${mandir}/man1/
 	$Qinstall -m ${MANMODE} man/rgbds.5 man/rgbasm.5 man/rgbasm-old.5 man/rgblink.5 ${DESTDIR}${mandir}/man5/

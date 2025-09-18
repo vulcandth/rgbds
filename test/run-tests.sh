@@ -93,7 +93,7 @@ fi
 
 # Tests included with the repository
 if "$internal"; then
-	for dir in asm link fix gfx; do
+	for dir in asm link fix fmt gfx; do
 		pushd $dir
 		./test.sh
 		popd

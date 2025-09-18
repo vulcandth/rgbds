@@ -6,6 +6,7 @@ for the Game Boy and Game Boy Color. It consists of:
 - RGBASM (assembler)
 - RGBLINK (linker)
 - RGBFIX (checksum/header fixer)
+- RGBFMT (RGBASM formatter)
 - RGBGFX (PNG-to-Game Boy graphics converter)
 
 This is a fork of the original RGBDS which aims to make the programs more like

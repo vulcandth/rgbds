@@ -1,0 +1,11 @@
+SECTION "Blanks", ROM0
+
+
+Label:
+
+ld a, b
+
+
+; leading comment
+ld c, d
+

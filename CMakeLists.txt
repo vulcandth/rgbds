@@ -110,7 +110,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
   check_ipo_supported(RESULT enable_lto)
   if(enable_lto)
     message(CHECK_PASS "yes")
-    set_property(TARGET rgbasm rgblink rgbfix rgbgfx PROPERTY INTERPROCEDURAL_OPTIMIZATION ON)
+    set_property(TARGET rgbasm rgblink rgbfix rgbfmt rgbgfx PROPERTY INTERPROCEDURAL_OPTIMIZATION ON)
   else()
     message(CHECK_FAIL "no")
   endif()
@@ -119,6 +119,7 @@ endif()
 set(MANDIR "share/man")
 set(man1 "man/rgbasm.1"
          "man/rgbfix.1"
+         "man/rgbfmt.1"
          "man/rgbgfx.1"
          "man/rgblink.1")
 set(man5 "man/rgbasm.5"

@@ -1,0 +1,11 @@
+SECTION "Space", ROM0
+Foo:
+ld a, b
+MACRO nested
+IF 1
+ld c, d
+ELSE
+ld e, h
+ENDC
+ENDM
+nested

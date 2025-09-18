@@ -1,0 +1,4 @@
+SECTION "InPlace", ROM0
+
+  Foo:
+ld a, b

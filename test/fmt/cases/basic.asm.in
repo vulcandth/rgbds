@@ -1,0 +1,18 @@
+SECTION "Demo", ROM0
+
+
+Label:
+ld a,1    ; comment with trailing spaces   
+   ; comment-only line
+    MACRO callIt
+IF 1
+ld b,2
+ELSE
+ld c,3
+ENDC
+
+
+ENDM
+
+callIt
+:    ld d,4 ; inline with anonymous label

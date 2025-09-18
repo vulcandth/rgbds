@@ -1,0 +1,114 @@
+.\" SPDX-License-Identifier: MIT
+.\"
+.Dd September 18, 2025
+.Dt RGBFMT 1
+.Os
+.Sh NAME
+.Nm rgbfmt
+.Nd formatter for RGBASM source files
+.Sh SYNOPSIS
+.Nm
+.Op Fl h
+.Op Fl i | Fl o Ar file
+.Op Fl \-indent-tabs | \-\-indent-spaces Ar n
+.Op Fl \-indent-base Ar n
+.Op Fl \-max-blank-lines Ar n
+.Op Fl \-\-no-trim-trailing-whitespace
+.Op Fl \-\-color Ar when
+.Op Fl V
+.Op Ar file ...
+.Sh DESCRIPTION
+The
+.Nm
+utility normalises the layout of RGBASM source files without altering
+assembler semantics.
+It rewrites indentation, compresses blank lines, and trims trailing
+whitespace according to the selected options.
+If no
+.Ar file
+is provided,
+.Nm
+reads standard input and writes the formatted output to standard output.
+When a single
+.Ar file
+is given, the formatted source is written to standard output unless
+.Fl i
+or
+.Fl o
+is specified.
+.Pp
+Multiple input files require the
+.Fl i
+flag, which rewrites each file in place.
+Passing
+.Ql -
+for
+.Ar file
+makes
+.Nm
+read from standard input; this cannot be combined with
+.Fl i .
+.Pp
+Options can be abbreviated so long as the abbreviation is unambiguous.
+Later options override earlier ones.
+The available flags are:
+.Bl -tag -width Ds
+.It Fl h , Fl \-help
+Display a help message and exit.
+.It Fl i , Fl \-in-place
+Rewrite each input file in place.
+.It Fl o Ar file , Fl \-output Ar file
+Write the formatted output to
+.Ar file .
+If
+.Ar file
+is
+.Ql - ,
+the result is printed to standard output.
+This option conflicts with
+.Fl i .
+.It Fl \-indent-tabs
+Indent using tabs (the default).
+.It Fl \-indent-spaces Ar n
+Indent using
+.Ar n
+spaces per level instead of tabs.
+.It Fl \-indent-base Ar n
+Apply
+.Ar n
+levels of indentation before considering nested block depth.
+The default is one level, which aligns instructions under labels at the
+first column.
+.It Fl \-max-blank-lines Ar n
+Keep at most
+.Ar n
+consecutive blank lines.
+The default preserves a single blank line; set
+.Ar n
+to 0 to remove blank lines entirely.
+.It Fl \-trim-trailing-whitespace
+Remove trailing spaces and tabs from each line (default).
+.It Fl \-no-trim-trailing-whitespace
+Preserve trailing whitespace exactly as written.
+.It Fl \-color Ar when
+Control when diagnostics are highlighted in colour:
+.Ql always ,
+.Ql never ,
+or
+.Ql auto .
+.Ql auto
+detects colour support using the
+.Ev NO_COLOR
+and
+.Ev FORCE_COLOR
+environment variables and whether the output is a TTY.
+.It Fl V , Fl \-version
+Print the program version and exit.
+.El
+.Sh EXIT STATUS
+.Ex -std
+.Sh SEE ALSO
+.Xr rgbasm 1 ,
+.Xr rgblink 1 ,
+.Xr rgbfix 1 ,
+.Xr rgbgfx 1
