@@ -177,13 +177,15 @@ jobs:
       - name: Package binaries
         shell: bash
         run: |
+          cpack --config build/CPackConfig.cmake -G ZIP -C Release --verbose
           mkdir bins
-          cp install_dir/bin/{rgbasm.exe,rgblink.exe,rgbfix.exe,rgbgfx.exe,z.dll,libpng16.dll} bins
+          cp install_dir/bin/rgb{asm,link,fix,gfx}.exe bins
+          cp install_dir/bin/*.dll bins
       - name: Upload Windows binaries
         uses: actions/upload-artifact@v4
         with:
           name: rgbds-canary-w${{ matrix.bits }}-${{ matrix.os }}
-          path: bins
+          path: build/rgbds-win${{ matrix.bits }}.zip
       - name: Compute test dependency cache params
         id: test-deps-cache-params
         shell: bash

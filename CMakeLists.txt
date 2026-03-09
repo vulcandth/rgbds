@@ -84,7 +84,10 @@ else(GIT)
 endif(GIT)
 
 find_package(PkgConfig)
-if(MSVC OR NOT PKG_CONFIG_FOUND)
+if(MSVC)
+  find_package(ZLIB REQUIRED CONFIG)
+  find_package(PNG REQUIRED CONFIG)
+elseif(NOT PKG_CONFIG_FOUND)
   # fallback to find_package
   # cmake's FindPNG is very fragile; it breaks when multiple versions are installed
   # this is most evident on macOS but can occur on Linux too
@@ -132,3 +135,20 @@ foreach(SECTION "man1" "man5" "man7")
   set(DEST "${MANDIR}/${SECTION}")
   install(FILES ${${SECTION}} DESTINATION ${DEST})
 endforeach()
+
+if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL "3.21")
+  if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(CPACK_SYSTEM_NAME "win64")
+  else()
+    set(CPACK_SYSTEM_NAME "win32")
+  endif()
+
+  set(CPACK_GENERATOR "ZIP")
+  set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
+  set(CPACK_PACKAGE_DIRECTORY "${CMAKE_BINARY_DIR}")
+  set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${CPACK_SYSTEM_NAME}")
+  set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_BINARY_DIR};${CMAKE_PROJECT_NAME};runtime;/")
+  set(CPACK_STRIP_FILES TRUE)
+  set(CPACK_VERBATIM_VARIABLES YES)
+  include(CPack)
+endif()

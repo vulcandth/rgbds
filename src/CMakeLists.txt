@@ -110,7 +110,7 @@ foreach(PROG "asm" "fix" "gfx" "link")
                  ${rgb${PROG}_src}
                  ${common_src}
                  )
-  install(TARGETS rgb${PROG} RUNTIME DESTINATION bin)
+  install(TARGETS rgb${PROG} RUNTIME DESTINATION bin COMPONENT runtime)
   # Required to run tests
   set_target_properties(rgb${PROG} PROPERTIES
   # hack for MSVC: no-op generator expression to stop generation of "per-configuration subdirectory"
@@ -122,9 +122,11 @@ if(LIBPNG_FOUND) # pkg-config
   target_link_directories(rgbgfx PRIVATE ${LIBPNG_LIBRARY_DIRS})
   target_link_libraries(rgbgfx PRIVATE ${LIBPNG_LIBRARIES})
 else()
-  target_compile_definitions(rgbgfx PRIVATE ${PNG_DEFINITIONS})
-  target_include_directories(rgbgfx PRIVATE ${PNG_INCLUDE_DIRS})
-  target_link_libraries(rgbgfx PRIVATE ${PNG_LIBRARIES})
+  target_link_libraries(rgbgfx PRIVATE PNG::PNG)
+endif()
+
+if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL "3.21")
+  install(FILES "$<TARGET_RUNTIME_DLLS:rgbgfx>" DESTINATION bin COMPONENT runtime)
 endif()
 
 include(CheckLibraryExists)
